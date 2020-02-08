@@ -1,0 +1,53 @@
+void PCalc_T::markNonPrimes(){
+/*
+unsigned int i = 0
+std::thread ([&]()){lambda... insert code using i}
+*/
+
+// vector container stores threads
+    std::vector<std::thread> workers;
+    for (int i = 0; i < bobsnumthreads; i++) {
+        workers.push_back(std::thread([i,this]() {
+            
+            //FROM TUTORIAL
+            std::cout << "num for this thread function is " << i << "\n";
+            std::cout << "print unique identifier for thread " << std::this_thread::get_id() << "\n";
+            std::cout << "bobsnumthreads variable is " << bobsnumthreads << "\n";
+            std::cout << "array_size() is " << array_size() << "\n";
+            std::cout << "sqrt(array_size()) is " << sqrt(array_size()) << "\n";
+            /*
+            unsigned int maxloopingforarray = sqrt(array_size());
+            unsigned int a=0, b=0, asquared = 0;
+            for (a = 2; a < maxloopingforarray; a++){
+               if(this->at(a) == true){
+                  std::cout << a << ",";
+                  asquared = a*a;
+                  for (b=0; (asquared+(a*b))<maxloopingforarray; b++) {
+                     std::cout << b << ",";
+                     mu.lock(); //created public class variable, should lock the shrared resource below
+                     this->at(asquared+(a*b))=false;
+                     mu.unlock(); //unlock the shared resource... or see MISTAKE#10 use std::atomic
+                  }
+               }
+            }
+            std::cout << "\nDONE WITH CALCS... OUTPUT PRIMEARRAY\n";
+            for (int checkprimesarray = 0; checkprimesarray < array_size(); checkprimesarray++){
+               std::cout << this->at(checkprimesarray) << ".";
+            }
+            */
+        }));
+    }
+    std::cout << "main thread\n";
+
+    // Looping every thread via for_each
+    // The 3rd argument assigns a task
+    // It tells the compiler we're using lambda ([])
+    // The lambda function takes its argument as a reference to a thread, t
+    // Then, joins one by one, and this works like barrier
+    std::for_each(workers.begin(), workers.end(), [](std::thread &t) 
+    {
+        t.join();
+    });
+
+
+}

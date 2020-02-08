@@ -122,15 +122,17 @@ int main(int argc, char *argv[]) {
    
       std::cout << "Function took: " << duration.count() << " microseconds\n";
 
+      //write_to_disk = false;
       if (write_to_disk) {
          std::cout << "Writing primes to file\n"; 
-         primes.printPrimes("sp_primes.txt");
+         primes.printPrimes("/home/robert/Desktop/sp_primes.txt");
       }
 
       std::cout << "Complete.\n";
       primes.cleanup();
    }
 
+   
    // Find primes using multiple threads
    if (use_multithread) {
 
@@ -148,6 +150,7 @@ int main(int argc, char *argv[]) {
       auto duration = duration_cast<microseconds>(stop - start);
       std::cout << "Function took: " << duration.count() << " microseconds\n";
 
+      write_to_disk = false;
       if (write_to_disk) {
          std::cout << "Writing primes to file\n";
          tprimes.printPrimes("threaded_primes.txt");
@@ -155,5 +158,5 @@ int main(int argc, char *argv[]) {
 
       std::cout << "Complete.\n";
 
-   }
+   } 
 }

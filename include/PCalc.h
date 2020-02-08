@@ -13,6 +13,10 @@
  *  	   Operator [] - returns a reference to an array element for reading or writing
  *  	   printPrimes - writes all marked prime numbers from the array to a newline-
  *  	                 delineated file
+ * 
+ * https://www.tutorialspoint.com/cplusplus/cpp_interfaces.htm
+ * A class is made abstract by declaring at least one of its functions as pure virtual function. 
+ * A pure virtual function is specified by placing "= 0" in its declaration
  *
  *****************************************************************************************/
 
@@ -33,6 +37,8 @@ class PCalc {
 
       // if you overload, don't forget to call me
       virtual void cleanup();
+
+      //void multithreadedfunction();
 
    protected:
 
