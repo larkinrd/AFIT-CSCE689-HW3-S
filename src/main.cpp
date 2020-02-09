@@ -150,10 +150,11 @@ int main(int argc, char *argv[]) {
       auto duration = duration_cast<microseconds>(stop - start);
       std::cout << "Function took: " << duration.count() << " microseconds\n";
 
-      write_to_disk = false;
+      //write_to_disk = false;
       if (write_to_disk) {
          std::cout << "Writing primes to file\n";
-         tprimes.printPrimes("threaded_primes.txt");
+         //tprimes.printPrimes("threaded_primes.txt");
+         tprimes.printPrimes("/home/robert/Desktop/threaded_primes.txt");
       }
 
       std::cout << "Complete.\n";

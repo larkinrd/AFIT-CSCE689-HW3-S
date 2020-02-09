@@ -37,22 +37,36 @@ void PCalc_SP::markNonPrimes() {
     //let A be an array of Boolean values, indexed by integers 2 to n,
     //initially all set to true.
     unsigned int maxloopingforarray = sqrt(array_size());
+    unsigned int myarraysize = array_size();
     unsigned int i, j, isquared;
     for (i = 2; i < maxloopingforarray; i++){
         //std::cout << i << ",";
         //std::cout << "for i =: " << i << " nixing: ";
         if(this->at(i) == true){
-            std::cout << i << ",";
+            //std::cout << "AT PRIME = " << i << "::";
             isquared = i*i;
-            for (int j=0; isquared+(i*j)<maxloopingforarray; j++) {
+            for (int j=0; isquared+(i*j)<myarraysize; j++) {
                 //std::cout << (i*i)+(i*j) << ",";
+                //std::cout << "i is: " << i << "::";
+                //std::cout << "j is: " << j << "::";;
+                //std::cout << "myarraysize is: " << myarraysize  << "::";
+                //std::cout << "isquared is: " << isquared << "::";
+                //std::cout << "isquared+(i*j) is: " << isquared+(i*j);
                 this->at(isquared+(i*j))=false;
+                //std::cout << std::endl;
                 //j+=i;                
             }
             //std::cout << std::endl;
         }
         //std::cout << std::endl;
     }
+
+//    std::cout << "\nDONE WITH CALCS... OUTPUT PRIMEARRAY\n";
+//            for (unsigned int checkprimesarray = 0; checkprimesarray < array_size(); checkprimesarray++){
+//               //std::cout << this->at(checkprimesarray) << ".";
+//                     if (this->at(checkprimesarray))
+//	                        std::cout << checkprimesarray << ".";
+//            }
     
     //for i = 2, 3, 4, ..., not exceeding √n do
     //    if A[i] is true

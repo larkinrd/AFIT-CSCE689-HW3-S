@@ -26,12 +26,12 @@ class PCalc_T : public PCalc {
 
         //bool &PCalc_SP::at(unsigned int x); 
 
-        void printPrimes(const char *filename); 
+        //void printPrimes(const char *filename); 
 
         unsigned int bobsnumthreads;
         std::mutex mu;
 
-        void multithreadedfunction();
+        //void multithreadedfunction();
         
     protected:
     private:

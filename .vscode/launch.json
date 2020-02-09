@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/src/prime_calc",
-            "args": [ "-t", "1", "-n", "103", "-m"],
+            "args": [ "-t", "4", "-n", "103", "-m"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

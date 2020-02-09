@@ -82,7 +82,7 @@ void PCalc::printPrimes(const char *filename) {
       if (primelist[i])
 	 outfile << i << "\n";
    }
-
+   //std::cout << "executed here";
    outfile.close();
 }
 
