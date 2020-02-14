@@ -31,9 +31,19 @@ class PCalc_T : public PCalc {
         unsigned int bobsnumthreads;
         std::mutex mu;
 
-        //void multithreadedfunction();
+
+  //ALL MY VARIABLES
+  //unsinged int maximum is: 	0 to 4294967295
+  int maxthreads = 0; 
+  unsigned int primesearchmax = 0;
+  
+  
+  //std::vector<unsigned int> primearray(primesearchmax,1);
+ 
+   
         
     protected:
+    
     private:
 
 };

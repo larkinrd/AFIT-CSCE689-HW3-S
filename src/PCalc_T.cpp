@@ -13,16 +13,42 @@
 #include <PCalc.h>
 #include <PCalc_T.h>
 
+#include <strings.h>
+#include <iomanip>
+
 
 //https://www.bogotobogo.com/cplusplus/C11/3_C11_Threading_Lambda_Functions.php
 //https://www.acodersjourney.com/top-20-cplusplus-multithreading-mistakes/
 //https://www.acodersjourney.com/c11-multithreading-tutorial-via-faq-thread-management-basics/#q20
 
-//static const int num_of_threads = 10; //do this for now
+                                       //threadslot,    maxthreads,       primesearchmax,      &threadarray[threadslot],     this);
+// My Thread Function 
+void mythreadfunction(unsigned int id, int totalthreads, unsigned int lastnum, unsigned int* arrayofthreads, PCalc_T *updateprimearray){
+     // critical section (exclusive access to std::cout signaled by locking mtx):
+  //WAS USED TO TEST MY LAZY THREAD LOGIC!
+  //std::this_thread::sleep_for (std::chrono::milliseconds(5000));
+
+  int primesquared = (*arrayofthreads)*(*arrayofthreads);
+  unsigned int startpt = *arrayofthreads;
+  for (unsigned int k=0; (primesquared + (startpt * k)) < lastnum; k++) {
+    *arrayofthreads = (primesquared + (startpt * k));
+    //mtx.lock(); // REALLY SLOWS DOWN THE CODE, BUT IS CORRECT LOGIC TO LOCK AND UNLOCK SHARED RESOURCE
+    updateprimearray->at(*arrayofthreads)=0;
+    //mtx.unlock();
+    //WAS USED TO TEST MY LAZY THREAD LOGIC!
+    //std::this_thread::sleep_for (std::chrono::milliseconds(250));
+  }
+  
+  //make the thread available to main
+  *arrayofthreads = 0;
+}
 
 PCalc_T::PCalc_T(unsigned int array_size, unsigned int num_threads):PCalc(array_size) {
-   bobsnumthreads = num_threads;
-   //num_of_threads = num_threads;
+  
+  maxthreads = num_threads;
+  primesearchmax = array_size; 
+
+  //std::cout << "maxthreads is " << maxthreads << "and primesearchmax is " << primesearchmax << std::endl;
 }
 
 
@@ -34,138 +60,102 @@ PCalc_T::~PCalc_T() {
    cleanup();
 }
 
-/* USED THIS FOR ATTEMPTS #1 AND #2 BELOW
-void PCalc_T::multithreadedfunction(){
-   std::cout << "Function running in multithreadedfunction " << std::endl;
-}
-*/
+
+
 
 void PCalc_T::markNonPrimes(){
+   unsigned int psqrt = sqrt(primesearchmax);
+   unsigned int threadarray[maxthreads];
+   bzero(threadarray, maxthreads * sizeof(int));
+   std::thread threads[maxthreads];
+   unsigned int threadslot = 0;
 
-//******
-// ATTEMPT #1 FROM https://www.go4expert.com/articles/writing-multithreaded-program-cpp-t29980/
-// 
-// I GET ERROR:  error: invalid use of non-static member function ‘void PCalc_T::multithreadedfunction()’
-//  std::thread t(multithreadedfunction);
-//
-//	//This statement will launch thread in parallel to main function
-//	std::thread t(multithreadedfunction);
-//	std::cout << "\nThe main function execution\n";
-//	//This is how we join the new thread with main
-//	t.join();
-//	getchar();
-//**********
-
-//******
-// ATTEMPT #2 FROM https://www.go4expert.com/articles/writing-multithreaded-program-cpp-t29980/
-// 
-// I GET SAME ERROR:  error: invalid use of non-static member function ‘void PCalc_T::multithreadedfunction()’
-//  std::thread t(multithreadedfunction);std::cout << "num_of_threads is " << num_of_threads << std::endl;
-/****
- * 
- * 
- * 
- * 
- * std::thread threads[num_of_threads];
- * 	//This statement will launch multiple threads in loop
- * 	for (int i = 0; i < num_of_threads; ++i) {
- * 		threads[i] = std::thread(multithreadedfunction, i);
- * 	}
- * 	std::cout << "The main function execution\n";
- * 	//This is how we join the new thread with main
- * 	for (int i = 0; i < num_of_threads; ++i) {
- * 		threads[i].join();
- * 	}
- * 	getchar();
+   //std::cout << "IS THIS EXECUTING" << std::endl;
+   //std::cout << "maxthreads is " << maxthreads << "and primesearchmax is " << primesearchmax << std::endl;
 
 
+ //Begin outer loop of Seive of Erathosnese starting at prime number 2
+  for(unsigned int primesearch =2; primesearch<psqrt; primesearch++) {
+    
+    //Print to screen current 'potential' prime number and status of running threads
+    //std::cout << "primesearch value is: " << primesearch << " :: ";    
+    //std::cout << "threadarray[]={"; for (int z=0; z<maxthreads; z++ ) {std::cout << threadarray[z] << ",";} std::cout << "}\n";
 
+/*********SEE BELOW******I'M EMARRASSED AND I CANNOT FIGURE THIS OUT**************************/   
+    //Check for a lazy thread (i.e. I think the number 3 or 4 is prime, but a thread is still on number 2)
+    //To say another, ensure all threads are evaluating a number greater than the potential prime number in order
+    //to prevent RACE CONDITION
+    for (int lazythread = 0; lazythread < maxthreads;){
+      if (threadarray[lazythread] <= primesearch && threadarray[lazythread] > 0 ){
+        //std::cout << "Threadslot is LAZY in threadarray[" << lazythread << "]=" <<threadarray[lazythread] << "... sleeping and resetting lazythread loop counter\n";
+        //std::cout << "threadarray[]={"; for (int z=0; z<maxthreads; z++ ) {std::cout << threadarray[z] << ",";} std::cout << "}\n";
+        std::this_thread::sleep_for (std::chrono::milliseconds(100));
+        lazythread =0;
+      } else {
+        //std::cout << "Threadslot is NOT LAZY with threadarray[" << lazythread << "]=" <<threadarray[lazythread] << "\n";
+        lazythread++;
+        continue;
+      }
+    }
+/*********************PLEASE CHECK LOGIC ABOVE HERE AND LETS DISCUSS**************************/       
 
+    //check if value primesearch in the primearray is true
+    if (this->at(primesearch) == true) {
 
-/* JUST SOME NOTES FROM FELLOW CLASSMATES
-unsigned int i = 0
-std::thread ([&]()){lambda... insert code using i}
-*/
-
-/****** ATTEMPT NUMBER 3 USING LAMBDA ******
-//
-// MAIN ERROR: The variable b in the inner loop does not work correctly
-
-*/
-
-unsigned int maxloopingforarray = sqrt(array_size());
-unsigned int myarraysize = array_size();
-         
-
-// vector container stores threads
-    std::vector<std::thread> workers;
-    for (int i = 0; i < bobsnumthreads; i++) {
-        workers.push_back(std::thread([i,this,maxloopingforarray,myarraysize]() {
-            
-            //FROM TUTORIAL
-         
-            //std::cout << "num for this thread function is " << i << "\n";
-            //std::cout << "print unique identifier for thread " << std::this_thread::get_id() << "\n";
-            //std::cout << "bobsnumthreads variable is " << bobsnumthreads << "\n";
-            //std::cout << "array_size() is " << array_size() << "\n";
-            //std::cout << "sqrt(array_size()) is " << (1/(i+1))*sqrt(myarraysize) << "\n";
-            //std::cout << "1/(i+1) is: " << maxloopingforarray/(i+1) << "\n";
-            
-            
-         unsigned int a=2, b, asquared;
-         //if (i == 0) { a = 2; } else { a = maxloopingforarray/(i+1);}
-         //if (i == 0) { a = 2; } else { a = 2+i;}
-         //std::cout << "Thread INT i is: " << i << " with INT a starting at: " << a << std::endl;
-       
-        
-        for (a ; a < maxloopingforarray; a++){
-          //std::cout << i << ",";
-        //std::cout << "for i =: " << i << " nixing: ";
-        if(this->at(a) == true){
-            std::cout << "Thread,"<<i<<",IS AT PRIME," << a << "\n";
-            asquared = a*a;
-            for (int b=0; asquared+(a*b)<myarraysize; b++) {
-                //std::cout << (i*i)+(i*j) << ",";
-                //std::cout << "i is: " << i << "::";
-                //std::cout << "j is: " << j << "::";;
-                //std::cout << "myarraysize is: " << myarraysize  << "::";
-                //std::cout << "isquared is: " << isquared << "::";
-                //std::cout << "isquared+(i*j) is: " << isquared+(i*j);
-                mu.lock();
-                this->at(asquared+(a*b))=false;
-                //std::cout << "Thread,"<<i<<",modifying position,"<< (asquared+(a*b)) << ",to false\n";
-                //std::cout << "Next position is: " << ((asquared+(a*b))+1) << " with value " << this->at((asquared+(a*b))+1) << "\n";
-                mu.unlock();
-                //std::cout << std::endl;
-                //j+=i;                
-            }
-            //std::cout << std::endl;
+       //initeloop until a thread becomes available
+      for (;;) {
+        if (threadarray[threadslot] == 0) {
+          break; //a thread became availealbe, break out of the loop
+        } else {
+        threadslot++;
+        threadslot = threadslot % (maxthreads); //just keeping looping over the number of threads
         }
-        //std::cout << std::endl;
-    }
-            
-        
-     
-            //std::cout << "\nDONE WITH CALCS... OUTPUT PRIMEARRAY\n";
-            //for (int checkprimesarray = 0; checkprimesarray < array_size(); checkprimesarray++){
-            //   std::cout << this->at(checkprimesarray) << ".";
-            //}
-            
-        }));
-    }
-    //mu.lock();
-    std::cout << "main thread\n";
-   //mu.unlock();
+      }
 
-    // Looping every thread via for_each
-    // The 3rd argument assigns a task
-    // It tells the compiler we're using lambda ([])
-    // The lambda function takes its argument as a reference to a thread, t
-    // Then, joins one by one, and this works like barrier
-    std::for_each(workers.begin(), workers.end(), [](std::thread &t) 
-    {
-        t.join();
-    });
+      //A thread become availale, set it to the prime number to spawn the thread and start crossing off multiples of it 
+      threadarray[threadslot] = primesearch; 
+
+      
+/*********************HAD ISSUES HERE**************************/      
+      // Join the thread object to main, first check to see if it is joinable
+      if(threads[threadslot].joinable() == true) {
+        threads[threadslot].join(); 
+        std::cout << "threadarray["<<threadslot<<"] has been JOINED TO main()";
+      }
+/*********************HAD ISSUES HERE**************************/    
+
+      // Spawn the thread and save it in a threads object array... however, std::thread() doesn't return reliable information
+      //  SEE https://en.cppreference.com/w/cpp/thread/thread ... "turn value of the top-level function is ignored"
+      // OH GOD! Programming the pass by reference for the threadarray[threadnum] hurt... VIEW DEITEL BOOK PG 322 Bubble Sort 
+      threads[threadslot] = std::thread(mythreadfunction, threadslot, maxthreads, primesearchmax, &threadarray[threadslot], this);
+
+/**************CODE HERE FIXES MY ISSUES**************************/  
+      //detach the thread and let it run
+      //threads[threadslot].detach(); 
+      //std::cout << "threadarray["<<threadslot<<"] has been detached from main()::";
+      //this prints out the status of the threads and their current number
+      std::cout << "threadarray[]={"; for (int z=0; z<maxthreads; z++ ) {std::cout << threadarray[z] << ",";} std::cout << "}\n";
+/**************CODE HERE FIXES MY ISSUES**************************/  
+      
+      threadslot++;
+      threadslot = threadslot % (maxthreads);
+
+    } //END if (primearray.at(primesearch) == 1 
+      
+      //GOOD CODE TO KEEP FOR DETACHING THREADS IN THE FUTURE
+      //for (int z = 0; z < maxthreads; z++){
+      //  if(threads[z].joinable() == true) {threads[z].detach(); std::cout << "threadarray["<<z<<"] has been detached from main()";}
+      //}
+  
+  }//END for(unsigned int primesearch =2; primesearch<psqrt; primesearch++) 
+
+for (int z = 0; z<maxthreads; z++){
+ // Join the thread object to main, first check to see if it is joinable
+      if(threads[threadslot].joinable() == true) {
+        threads[threadslot].join(); 
+        //std::cout << "threadarray["<<threadslot<<"] has been JOINED TO main()";
+      }
+}
 
 
 }

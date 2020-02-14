@@ -125,7 +125,7 @@ int main(int argc, char *argv[]) {
       //write_to_disk = false;
       if (write_to_disk) {
          std::cout << "Writing primes to file\n"; 
-         primes.printPrimes("/home/robert/Desktop/sp_primes.txt");
+         primes.printPrimes("sp_primes.txt");
       }
 
       std::cout << "Complete.\n";
@@ -154,7 +154,7 @@ int main(int argc, char *argv[]) {
       if (write_to_disk) {
          std::cout << "Writing primes to file\n";
          //tprimes.printPrimes("threaded_primes.txt");
-         tprimes.printPrimes("/home/robert/Desktop/threaded_primes.txt");
+         tprimes.printPrimes("threaded_primes.txt");
       }
 
       std::cout << "Complete.\n";
