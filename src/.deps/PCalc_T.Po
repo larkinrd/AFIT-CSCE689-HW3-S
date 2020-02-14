@@ -185,7 +185,12 @@ PCalc_T.o: PCalc_T.cpp /usr/include/stdc-predef.h \
  /usr/include/libintl.h /usr/include/c++/8/bits/locale_facets_nonio.tcc \
  /usr/include/c++/8/bits/locale_conv.h \
  /usr/include/c++/8/bits/quoted_string.h /usr/include/c++/8/sstream \
- /usr/include/c++/8/bits/sstream.tcc
+ /usr/include/c++/8/bits/sstream.tcc /usr/include/unistd.h \
+ /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
+ /usr/include/x86_64-linux-gnu/bits/environments.h \
+ /usr/include/x86_64-linux-gnu/bits/confname.h \
+ /usr/include/x86_64-linux-gnu/bits/getopt_posix.h \
+ /usr/include/x86_64-linux-gnu/bits/getopt_core.h
 
 /usr/include/stdc-predef.h:
 
@@ -668,3 +673,15 @@ PCalc_T.o: PCalc_T.cpp /usr/include/stdc-predef.h \
 /usr/include/c++/8/sstream:
 
 /usr/include/c++/8/bits/sstream.tcc:
+
+/usr/include/unistd.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix_opt.h:
+
+/usr/include/x86_64-linux-gnu/bits/environments.h:
+
+/usr/include/x86_64-linux-gnu/bits/confname.h:
+
+/usr/include/x86_64-linux-gnu/bits/getopt_posix.h:
+
+/usr/include/x86_64-linux-gnu/bits/getopt_core.h:

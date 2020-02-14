@@ -16,6 +16,8 @@
 #include <strings.h>
 #include <iomanip>
 
+#include <unistd.h>
+
 
 //https://www.bogotobogo.com/cplusplus/C11/3_C11_Threading_Lambda_Functions.php
 //https://www.acodersjourney.com/top-20-cplusplus-multithreading-mistakes/
@@ -28,7 +30,7 @@ void mythreadfunction(unsigned int id, int totalthreads, unsigned int lastnum, u
   //WAS USED TO TEST MY LAZY THREAD LOGIC!
   //std::this_thread::sleep_for (std::chrono::milliseconds(5000));
 
-  int primesquared = (*arrayofthreads)*(*arrayofthreads);
+  unsigned int primesquared = (*arrayofthreads)*(*arrayofthreads);
   unsigned int startpt = *arrayofthreads;
   for (unsigned int k=0; (primesquared + (startpt * k)) < lastnum; k++) {
     *arrayofthreads = (primesquared + (startpt * k));
@@ -89,7 +91,8 @@ void PCalc_T::markNonPrimes(){
       if (threadarray[lazythread] <= primesearch && threadarray[lazythread] > 0 ){
         //std::cout << "Threadslot is LAZY in threadarray[" << lazythread << "]=" <<threadarray[lazythread] << "... sleeping and resetting lazythread loop counter\n";
         //std::cout << "threadarray[]={"; for (int z=0; z<maxthreads; z++ ) {std::cout << threadarray[z] << ",";} std::cout << "}\n";
-        std::this_thread::sleep_for (std::chrono::milliseconds(100));
+        //std::this_thread::sleep_for (std::chrono::milliseconds(100));
+        usleep(10);
         lazythread =0;
       } else {
         //std::cout << "Threadslot is NOT LAZY with threadarray[" << lazythread << "]=" <<threadarray[lazythread] << "\n";
@@ -120,7 +123,7 @@ void PCalc_T::markNonPrimes(){
       // Join the thread object to main, first check to see if it is joinable
       if(threads[threadslot].joinable() == true) {
         threads[threadslot].join(); 
-        std::cout << "threadarray["<<threadslot<<"] has been JOINED TO main()";
+        //std::cout << "threadarray["<<threadslot<<"] has been JOINED TO main()";
       }
 /*********************HAD ISSUES HERE**************************/    
 
@@ -134,11 +137,12 @@ void PCalc_T::markNonPrimes(){
       //threads[threadslot].detach(); 
       //std::cout << "threadarray["<<threadslot<<"] has been detached from main()::";
       //this prints out the status of the threads and their current number
-      std::cout << "threadarray[]={"; for (int z=0; z<maxthreads; z++ ) {std::cout << threadarray[z] << ",";} std::cout << "}\n";
+      //std::cout << "THREAD "<<threadslot<<" launched. STATUS::threadarray[]={"; for (int z=0; z<maxthreads; z++ ) {std::cout << threadarray[z] << ",";} std::cout << "}\n";
 /**************CODE HERE FIXES MY ISSUES**************************/  
       
-      threadslot++;
-      threadslot = threadslot % (maxthreads);
+      threadslot=0;
+      //threadslot++;
+      //threadslot = threadslot % (maxthreads);
 
     } //END if (primearray.at(primesearch) == 1 
       
@@ -152,7 +156,7 @@ void PCalc_T::markNonPrimes(){
 for (int z = 0; z<maxthreads; z++){
  // Join the thread object to main, first check to see if it is joinable
       if(threads[z].joinable() == true) {
-        threads[z].join(); 
+        threads[z].join();
         //std::cout << "threadarray["<<threadslot<<"] has been JOINED TO main()";
       }
 }
