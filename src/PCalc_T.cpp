@@ -151,8 +151,8 @@ void PCalc_T::markNonPrimes(){
 
 for (int z = 0; z<maxthreads; z++){
  // Join the thread object to main, first check to see if it is joinable
-      if(threads[threadslot].joinable() == true) {
-        threads[threadslot].join(); 
+      if(threads[z].joinable() == true) {
+        threads[z].join(); 
         //std::cout << "threadarray["<<threadslot<<"] has been JOINED TO main()";
       }
 }
